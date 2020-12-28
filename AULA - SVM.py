@@ -22,6 +22,7 @@ beta12 = 1
 beta11 = 1
 beta22 = 1
 Y = np.around(beta0 + beta1*x1 + beta2*x2 + beta12*x1*x2 + beta11*x1**2 + beta22*x2**2)
+
 #plano que define o target
 corte = 10000
 # cria target q é a variável a ser , dependendo da superfície
@@ -71,7 +72,7 @@ ax.scatter(amostra.x1, amostra.x2, c=amostra.cor)
 
 # ajuste do modelo linear
 
-def acuracia(modelo):
+def max_acuracia(modelo):
     acc = np.empty(100, dtype=float)
     max_acc = 0
     for i in range(0, 100, 1):
@@ -96,7 +97,7 @@ print(accuracy2, prob_corte2)
 logito_corte2= round(math.log( (prob_corte2)/(1-prob_corte2)), 2)
 
 
-#calcula superfície de máxima separação modelo 1
+#calcula superfície de separação máxima modelo 1
 base['prob_prev'] = logistica1.predict(base)
 base['logito_prev'] = round( np.log( (base['prob_prev'])/(1-(base['prob_prev'])) ),2)
 superficie_otima = base[base['logito_prev']==logito_corte1]
