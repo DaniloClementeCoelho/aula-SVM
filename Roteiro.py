@@ -6,39 +6,33 @@ import statsmodels.formula.api as smf
 from funções.maxima_acuracia import max_acuracia
 from funções.Gera_Base import gera_base_quadrática
 from funções.superficie_separacao_maxima import sup_sep_max
+from funções.analise_superficie_gráfica import gera_graficos
 from funções.
 
 # ##############################    SETA PARÂMETROS      ###################################
 # parâmetros do hiperplano que vai gerar a superfície de classificação
 
 limite_eixos=10
-beta={  'intercepto'  : '0',
+
+LI, LS = min_max_funcao()
+
+beta={  'intercepto'  : '1',
                 'x1'  : '1',
-                'x2'  : '-1',
-                'x1x2': '0',
-                'x1^2': '0',
-                'x2^2': '0'
+                'x2'  : '1',
+                'x1x2': '1',
+                'x1^2': '1',
+                'x2^2': '1'
         }
-corte=2
+
+
+corte=100
 
 # ####################   GERA BASE, SUPERFICIE E HIPERPLANO    ####################################
 db, x1_surf, x2_surf = gera_base_quadrática(corte=corte, beta=beta, limite_eixos=limite_eixos)
-base_plot = db.sample(1000)
-# da uma olhada como ficou 2D
-plt.scatter(base_plot['x1'], base_plot['x2'])
-plt.scatter(base_plot['x1'], base_plot['x2'], c=base_plot['cor'])
-# da uma olhada como ficou 3D
-temp = plt.figure().add_subplot(projection='3d')
-temp.plot_surface(
-    x1_surf, x2_surf, np.array(db['logito_gabarito']).reshape(x1_surf.shape),
-    alpha=0.3, color='black', label='superficie')
-temp.plot_surface(
-    x1_surf, x2_surf, np.zeros(x1_surf.size).reshape(x1_surf.shape) + corte,
-    alpha=0.3, color = 'orange', label='hiperplano')
-base_pontos_plano_cortado = db[round(db['logito_gabarito']) == corte]
-temp.scatter(base_pontos_plano_cortado['x1'], base_pontos_plano_cortado['x2'], base_pontos_plano_cortado['logito_gabarito'],
-             c='black', marker='_', s=1, alpha=0.5, label='intercecção' )
-temp.legend()
+
+grafico_inicial = gera_graficos(db, x1_surf, x2_surf, corte)
+
+
 # ####################   CONFIGURA GRÁFICOS    ####################################
 fig = plt.figure()
 ax = fig.add_subplot(111)
