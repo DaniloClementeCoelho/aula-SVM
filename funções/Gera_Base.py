@@ -4,7 +4,7 @@ import numpy as np
 # beta = vetor de parâmetros desejados ("gabarito")
 # hiperplano que vai gerar a superfície de classificação
 
-def gera_base_quadrática(beta, corte, limite_eixos = 10):
+def gera_base_quadrática(beta, corte, ruido, limite_eixos = 10):
     x1_surf, x2_surf = np.meshgrid(np.arange(-limite_eixos, limite_eixos, 0.1),
                        np.arange(-limite_eixos, limite_eixos, 0.1))
     x1 = x1_surf.ravel()
@@ -23,7 +23,7 @@ def gera_base_quadrática(beta, corte, limite_eixos = 10):
     target = np.empty(len(x1), dtype=int)
     target_real = np.empty(len(x1), dtype=int)
     cor = np.empty(len(x1), dtype=object)
-    noise = logito.mean()/3 #valor da aletorização - ruído não explicado pelo modelo
+    noise = ruido #valor da aletorização - ruído não explicado pelo modelo
 
     #simula reposta aleatória
     for i in range(len(logito)):
