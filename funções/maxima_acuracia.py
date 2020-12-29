@@ -8,4 +8,4 @@ def max_acuracia(modelo):
         max_acc = max(max_acc, acc[i])
         if max_acc == acc[i]:
             corte = i/100
-    return max_acc, corte, round(np.log((corte) / (1 - corte)), 2)
+    return max_acc, acc, round(np.log((corte) / (1 - corte)), 2)
