@@ -74,12 +74,10 @@ ax.set_ylim(-limite_eixos, limite_eixos)
 # ##################################### RODADA 6 ##############################################
 # ###################    AJUSTA OS MODELOS   ######################################
 import statsmodels.formula.api as smf
-from funções.maxima_acuracia import max_acuracia
+from funções.indicadores_performace_otimos import max_acuracia
+# from funções.indicadores_performace_otimos import max_sensibilidade
 from funções.superficie_separacao_maxima import sup_sep_max
 amostra = db.sample(1000)
-
-
-ax.scatter(amostra.x1, amostra.x2, c=amostra.cor)
 
 # MODELO LINEAR SIMPLES
 logistica1 = smf.logit(formula='target ~ x1 + x2', data=amostra).fit()
@@ -89,6 +87,7 @@ print('   maxima acuracia:', round(max_acu1*100,1), '%',
       '   prob_acuracia_max:', prob_max1,
       '   tx_azul', round((1-db.target.mean())*100,1), '%')#calcula e plota superfície de separação máxima
 superficie_otima1 = sup_sep_max(db, logistica1, logito_otimo_ajustado1)
+print(db['prob_prev'].min(), db['prob_prev'].max(), prob_max1)
 ax.scatter(superficie_otima1.x1, superficie_otima1.x2,
            c='black', marker=',', s=1, label=max_acu1)
 
@@ -97,28 +96,36 @@ ax.scatter(superficie_otima1.x1, superficie_otima1.x2,
 logistica2 = smf.logit(formula='target ~ x1 + x2 + I(x1*x2) + I(x1*x1) + I(x2*x2)', data=amostra).fit()
 logistica2.summary()
 max_acu2, prob_max2, vec_acu2, logito_otimo_ajustado2 = max_acuracia(logistica2)
+# max_sen2, prob_max2, vec_sen2, logito_otimo_ajustado2 = max_sensibilidade(logistica2)
 print('   maxima acuracia:', round(max_acu2*100,1), '%',
       '   prob_acuracia_max:', prob_max2,
       '   tx_azul', round((1-db.target.mean())*100,1), '%')
 # calcula e plota superfície de separação máxima
 superficie_otima2 = sup_sep_max(db, logistica2, logito_otimo_ajustado2)
+print(db['prob_prev'].min(), db['prob_prev'].max(), prob_max2)
 ax.scatter(superficie_otima2.x1, superficie_otima2.x2,
            c='black', marker=',', s=1, label=max_acu2)
 
 plt.legend()
 
-# plota gabarito
+
+
+
+ax.contourf(x1_surf, x2_surf, prob_prev_surf, cmap=plt.cm.coolwarm) # plota as probabilidade estimadas
 ax.contourf(x1_surf, x2_surf, np.array(db['target_gabarito']).reshape(x1_surf.shape),
-            cmap=plt.cm.coolwarm, alpha=0.5)
+            cmap=plt.cm.coolwarm, alpha=0.5)# plota gabarito
+ax.scatter(amostra.x1, amostra.x2, c=amostra.cor, marker='o', alpha=0.5, s=2) #plota os pontos
 
 
 # ############################# GRAFICOS 4D  ##############################
 # superficie plotada com curva teórica pintada de acordo com a probabilidade prevista
 fig = plt.figure()
 ax = fig.gca(projection='3d')
-logito_surf = np.array(db['logito_gabarito']).reshape(x1_surf.shape)
+# logito_surf = np.array(db['logito_gabarito']).reshape(x1_surf.shape)
 prob_prev_surf = np.array(db['prob_prev']).reshape(x1_surf.shape)
-surf = ax.plot_surface(x1_surf, x2_surf, logito_surf, cmap=plt.cm.coolwarm)
+ax.plot_surface(x1_surf, x2_surf, prob_prev_surf, cmap=plt.cm.coolwarm)
+ax.scatter(amostra['x1'], amostra['x2'], amostra['logito_gabarito'],
+             c=amostra['cor'], marker='x', s=3, alpha=0.9)
 
 # ###### CONFIGURA GRÁFICOS PRA IR MOSTRANDO PONTO A PONTO
 fig3d = plt.figure()
