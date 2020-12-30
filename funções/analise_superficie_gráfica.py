@@ -21,6 +21,7 @@ def gera_graficos(base, x1_surf, x2_surf, corte):
     # da uma olhada como ficou 2D
     ax_2D.scatter(base_plot['x1'], base_plot['x2'], c=base_plot['cor'],
                   marker=',', s=2, alpha=0.9)
-    ax_2D.scatter(intercecção['x1'], intercecção['x2'], c='black')
+    ax_2D.scatter(intercecção['x1'], intercecção['x2'], c='black',
+                  marker='o', s=1)
 
     return figura

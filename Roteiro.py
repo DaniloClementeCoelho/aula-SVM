@@ -1,19 +1,14 @@
-# ##################################### RODADA 1 ##############################################
 # rodar pelo console interativo do Python (Alt+Shift+E)
-# ##############################    INCLUI BIBLIOTECAS      ###################################
-import numpy as np
-import matplotlib.pyplot as plt
-import statsmodels.formula.api as smf
-
-# ##################################### RODADA 2 ##############################################
+# ##################################### RODADA 1 ##############################################
 # ##############################    DELIMITA O ESPAÇO ESTUDADO      ###################################
-limite_eixos = 100  # quanto maior, maior será o tamanho da amostra e processamento
+import numpy as np
+limite_eixos = 50  # quanto maior, maior será o tamanho da amostra e processamento
 x1_surf, x2_surf = np.meshgrid(np.arange(-limite_eixos, limite_eixos, 0.1),
                                np.arange(-limite_eixos, limite_eixos, 0.1))
 x1 = x1_surf.ravel()
 x2 = x2_surf.ravel()
 
-# ##################################### RODADA 3 ##############################################
+# ##################################### RODADA 2 ##############################################
 # ##############################    ESCOLHE FUNÇÕES LOGITO      ###################################
 # SUPERFÍCIE LINEAR/QUADRÁTICA BIMODAL
 beta = {'intercepto'  : '1',
@@ -35,37 +30,39 @@ logito = np.around(beta0 + beta1 * x1 + beta2 * x2 + beta12 * x1 * x2 + beta11 *
 # NORMAL MULTIVARIADA BIMODAL
 from funções.gera_normais_multivariadas import multivariate_gaussian
 # Mean vector and covariance matrix
-mu1 = np.array([-10., -10.])
-Sigma1 = np.array([[1., -0.5], [-0.5,  1.5]])
+mu1 = np.array([-30., -20.])
+Sigma1 = np.array([[50., -0.9], [-0.9,  30]])
 
-mu2 = np.array([10., 10.])
-Sigma2 = np.array([[10., 0], [0,  10.]])
+mu2 = np.array([30., 30.])
+Sigma2 = np.array([[30., 10], [10,  30.]])
 
 # Pack X and Y into a single 3-dimensional array
 pos = np.empty(x1_surf.shape + (2,))
 pos[:, :, 0] = x1_surf
 pos[:, :, 1] = x2_surf
 
-logito = multivariate_gaussian(pos, mu1, Sigma1) + multivariate_gaussian(pos, mu2, Sigma2)
+logito = 1000*(multivariate_gaussian(pos, mu1, Sigma1) + multivariate_gaussian(pos, mu2, Sigma2)).ravel()
 
-# ##################################### RODADA 4 ##############################################
-# print(logito.min(), logito.max()) #olhar os limites para colocar um "corte" que faça sentido
+# ##################################### RODADA 3 ##############################################
+print(logito.min(), logito.max()) #olhar os limites para colocar um "corte" que faça sentido
 
 # definir o hiperplano de corte a ser utilizado e a variação do ruído na geração da amostra
-corte = 10000            # depois de olhar os limites da função, escolher um corte que faça um "desenho interessante"
-ruido = abs(corte)/3     # desvio padrão do ruído:para que as regressões não acertem 100%.
+corte = 1            # depois de olhar os limites da função, escolher um corte que faça um "desenho interessante"
+ruido = 0.5     # desvio padrão do ruído:para que as regressões não acertem 100%.
                          # Escolher valores adequados olhando os gráficos abaixo
 
-# ##################################### RODADA 5 ##############################################
+# ##################################### RODADA 4 ##############################################
 # ####################   GERA BASE, SUPERFICIE E HIPERPLANO    ####################################
 from funções.Gera_Base import gera_base
 db = gera_base(x1, x2, logito, corte=corte, ruido=ruido)
-
+print('taxa vermelho:', round(db.target.mean()*100,1), '%')
 from funções.analise_superficie_gráfica import gera_graficos
 gera_graficos(db, x1_surf, x2_surf, corte)  # olhar o gráfico e ajustar o corte e ruído, se necessário
 
-# ##################################### RODADA 6 ##############################################
+# ##################################### RODADA 5 ##############################################
 # ##############################   CONFIGURA GRÁFICOS    ######################################
+import matplotlib.pyplot as plt
+
 fig = plt.figure()
 ax = fig.add_subplot(111)
 ax.set_xlabel('x1')
@@ -74,8 +71,9 @@ ax.set_ylabel('x2')
 ax.set_ylim(-limite_eixos, limite_eixos)
 
 
-# ##################################### RODADA 7 ##############################################
+# ##################################### RODADA 6 ##############################################
 # ###################    AJUSTA OS MODELOS   ######################################
+import statsmodels.formula.api as smf
 from funções.maxima_acuracia import max_acuracia
 from funções.superficie_separacao_maxima import sup_sep_max
 amostra = db.sample(1000)
@@ -86,19 +84,26 @@ ax.scatter(amostra.x1, amostra.x2, c=amostra.cor)
 # MODELO LINEAR SIMPLES
 logistica1 = smf.logit(formula='target ~ x1 + x2', data=amostra).fit()
 logistica1.summary()
-max_acu1, vec_acu1, logito_otimo_ajustado1 = max_acuracia(logistica1)
-#calcula e plota superfície de separação máxima
+max_acu1, prob_max1, vec_acu1, logito_otimo_ajustado1 = max_acuracia(logistica1)
+print('   maxima acuracia:', round(max_acu1*100,1), '%',
+      '   prob_acuracia_max:', prob_max1,
+      '   tx_azul', round((1-db.target.mean())*100,1), '%')#calcula e plota superfície de separação máxima
 superficie_otima1 = sup_sep_max(db, logistica1, logito_otimo_ajustado1)
-ax.scatter(superficie_otima1.x1, superficie_otima1.x2, c='black', marker=',', s=1, label=max_acu1)
+ax.scatter(superficie_otima1.x1, superficie_otima1.x2,
+           c='black', marker=',', s=1, label=max_acu1)
 
 # MODELO LINEAR QUADRÁTICO
 
 logistica2 = smf.logit(formula='target ~ x1 + x2 + I(x1*x2) + I(x1*x1) + I(x2*x2)', data=amostra).fit()
 logistica2.summary()
-max_acu2, vec_acu2, logito_otimo_ajustado2 = max_acuracia(logistica2)
+max_acu2, prob_max2, vec_acu2, logito_otimo_ajustado2 = max_acuracia(logistica2)
+print('   maxima acuracia:', round(max_acu2*100,1), '%',
+      '   prob_acuracia_max:', prob_max2,
+      '   tx_azul', round((1-db.target.mean())*100,1), '%')
 # calcula e plota superfície de separação máxima
 superficie_otima2 = sup_sep_max(db, logistica2, logito_otimo_ajustado2)
-ax.scatter(superficie_otima2.x1, superficie_otima2.x2, c='black', marker=',', s=1, label=max_acu2)
+ax.scatter(superficie_otima2.x1, superficie_otima2.x2,
+           c='black', marker=',', s=1, label=max_acu2)
 
 plt.legend()
 
