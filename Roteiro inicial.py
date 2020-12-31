@@ -56,7 +56,7 @@ ruido = 0.5     # desvio padrão do ruído:para que as regressões não acertem 
 from funções.Gera_Base import gera_base
 db = gera_base(x1, x2, logito, corte=corte, ruido=ruido)
 print('taxa vermelho:', round(db.target.mean()*100,1), '%')
-from funções.analise_superficie_gráfica import gera_graficos
+from funções.analise_inicial_superficie_gráfica import gera_graficos
 gera_graficos(db, x1_surf, x2_surf, corte)  # olhar o gráfico e ajustar o corte e ruído, se necessário
 
 # ##################################### RODADA 5 ##############################################
