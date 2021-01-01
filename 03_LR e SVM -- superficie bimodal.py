@@ -24,8 +24,7 @@ x2 = x2_surf.ravel()
 X = np.concatenate([x1.reshape(x1.size, 1), x2.reshape(x1.size, 1)], axis=1)
 
 
-# ##########    NORMAL MULTIVARIADA BIMODAL COMO LOGITO      ##################################
-# Mean vector and covariance matrix
+# ##########    NORMAL MULTIVARIADA BIMODAL COMO LOGITO      ############# Mean vector and covariance matrix
 mu1 = np.array([-30., -20.])
 Sigma1 = np.array([[50., -0.9], [-0.9,  30]])
 
@@ -66,7 +65,7 @@ prob_prev_log_lin_surf = np.array(db['prob_prev_log_linear']).reshape(x1_surf.sh
 ax1 = fig.add_subplot(221)
 ax1.title.set_text('LOGÍSTICA')
 ax1.contourf(x1_surf, x2_surf, prob_prev_log_lin_surf, cmap=plt.cm.coolwarm) # plota as probabilidade estimadas
-# ax1.scatter(amostra.x1, amostra.x2, c=amostra.cor, marker='o', alpha=0.9, s=2) #plota os pontos
+#ax1.scatter(amostra.x1, amostra.x2, c=amostra.cor, marker='o', alpha=0.9, s=2) #plota os pontos
 
         # Logistico Quadrático
 logist_quad = make_pipeline(PolynomialFeatures(2), LogisticRegression(penalty='none'))
@@ -78,7 +77,7 @@ prob_prev_log_quad_surf = np.array(db['prob_prev_log_quad']).reshape(x1_surf.sha
 ax2 = fig.add_subplot(222)
 ax2.title.set_text('LOGÍSTICA QUADRÁTICA')
 ax2.contourf(x1_surf, x2_surf, prob_prev_log_quad_surf, cmap=plt.cm.coolwarm) # plota as probabilidade estimadas
-# ax2.scatter(amostra.x1, amostra.x2, c=amostra.cor, marker='o', alpha=0.9, s=2) #plota os pontos
+#ax2.scatter(amostra.x1, amostra.x2, c=amostra.cor, marker='o', alpha=0.9, s=2) #plota os pontos
 
         # SVM
 SVM = svm.SVC()
