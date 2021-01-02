@@ -17,8 +17,8 @@ from funções.analise_inicial_superficie_gráfica import gera_graficos
 
 # DELIMITA ESPAÇO A SER ESTUDADO
 limite_eixos = 50  # quanto maior, maior será o tamanho da amostra e processamento
-x1_surf, x2_surf = np.meshgrid(np.arange(-limite_eixos, limite_eixos, 1),
-                               np.arange(-limite_eixos, limite_eixos, 1))
+x1_surf, x2_surf = np.meshgrid(np.arange(-limite_eixos, limite_eixos, 0.1),
+                               np.arange(-limite_eixos, limite_eixos, 0.1))
 x1 = x1_surf.ravel()
 x2 = x2_surf.ravel()
 X = np.concatenate([x1.reshape(x1.size, 1), x2.reshape(x1.size, 1)], axis=1)
@@ -82,7 +82,10 @@ ax2.contourf(x1_surf, x2_surf, prob_prev_log_quad_surf, cmap=plt.cm.coolwarm) # 
 
         # SVM
 SVM = svm.SVC()
-SVM.fit(X, db.target)
+sample = db.sample(10000)
+X_sample = np.concatenate([np.array(sample.x1).reshape(sample.x1.size, 1),
+                           np.array(sample.x2).reshape(sample.x2.size, 1)], axis=1)
+SVM.fit(X_sample, sample.target)
 db['prev_SVM'] = SVM.predict(X)
 prob_prev_SVM_surf = np.array(db['prev_SVM']).reshape(x1_surf.shape)
 # print("Acurácia:", accuracy_score(y_test, y_pred))# Gráfico

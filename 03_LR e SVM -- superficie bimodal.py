@@ -17,8 +17,8 @@ from funções.analise_inicial_superficie_gráfica import gera_graficos
 
 # DELIMITA ESPAÇO A SER ESTUDADO
 limite_eixos = 50  # quanto maior, maior será o tamanho da amostra e processamento
-x1_surf, x2_surf = np.meshgrid(np.arange(-limite_eixos, limite_eixos, 1),
-                               np.arange(-limite_eixos, limite_eixos, 1))
+x1_surf, x2_surf = np.meshgrid(np.arange(-limite_eixos, limite_eixos, 0.1),
+                               np.arange(-limite_eixos, limite_eixos, 0.1))
 x1 = x1_surf.ravel()
 x2 = x2_surf.ravel()
 X = np.concatenate([x1.reshape(x1.size, 1), x2.reshape(x1.size, 1)], axis=1)
@@ -29,7 +29,7 @@ mu1 = np.array([-30., -20.])
 Sigma1 = np.array([[50., -0.9], [-0.9,  30]])
 
 mu2 = np.array([30., 30.])
-Sigma2 = np.array([[30., 10], [10,  30.]])
+Sigma2 = np.array([[40., 10], [10,  30.]])
 
 # Pack X and Y into a single 3-dimensional array
 pos = np.empty(x1_surf.shape + (2,))
@@ -43,7 +43,7 @@ print(logito.min(), logito.max()) #olhar os limites para colocar um "corte" que 
 
 # definir o hiperplano de corte a ser utilizado e a variação do ruído na geração da amostra
 corte = 1            # depois de olhar os limites da função, escolher um corte que faça um "desenho interessante"
-ruido = 0.5     # desvio padrão do ruído:para que as regressões não acertem 100%.Escolher valores adequados olhando os gráficos abaixo
+ruido = 0.3     # desvio padrão do ruído:para que as regressões não acertem 100%.Escolher valores adequados olhando os gráficos abaixo
 
 
 # ####################   GERA BASE, SUPERFICIE E HIPERPLANO    ####################################
@@ -81,7 +81,10 @@ ax2.contourf(x1_surf, x2_surf, prob_prev_log_quad_surf, cmap=plt.cm.coolwarm) # 
 
         # SVM
 SVM = svm.SVC()
-SVM.fit(X, db.target)
+sample = db.sample(10000)
+X_sample = np.concatenate([np.array(sample.x1).reshape(sample.x1.size, 1),
+                           np.array(sample.x2).reshape(sample.x2.size, 1)], axis=1)
+SVM.fit(X_sample, sample.target)
 db['prev_SVM'] = SVM.predict(X)
 prob_prev_SVM_surf = np.array(db['prev_SVM']).reshape(x1_surf.shape)
 # print("Acurácia:", accuracy_score(y_test, y_pred))# Gráfico
