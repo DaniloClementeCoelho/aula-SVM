@@ -22,12 +22,12 @@ test_data = raw_test.reshape(10000, 28*28)
 test_label = read_idx("./Bases/MNIST/t10k-labels-idx1-ubyte.gz")
 
 # visualiza os dados
-foto=0
-fig = plt.figure(figsize=(1, 1))
+foto = 23454
+fig = plt.figure(figsize=(2, 2))
 ax = fig.add_subplot(111)
 ax.set_axis_off()
-ax.imshow(raw_train[foto], cmap=plt.cm.gray_r, interpolation='nearest', label=train_label[foto])
-plt.legend()
+ax.imshow(raw_train[foto], cmap=plt.cm.gray_r, interpolation='nearest')
+ax.set_title("valor do target = " + np.str(train_label[foto]))
 
 
 idx = (train_label == 2) | (train_label == 3) | (train_label == 8)
