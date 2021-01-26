@@ -1,17 +1,10 @@
 # rodar pelo console interativo do Python (Alt+Shift+E)
 import numpy as np
-
 import matplotlib.pyplot as plt
-
 from sklearn.linear_model import LogisticRegression
 from sklearn import svm
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import roc_auc_score, roc_curve, classification_report,\
-                            accuracy_score, confusion_matrix, auc
-
-from funções.gera_normais_multivariadas import multivariate_gaussian
 from funções.Gera_Base import gera_base
 from funções.analise_inicial_superficie_gráfica import gera_graficos
 

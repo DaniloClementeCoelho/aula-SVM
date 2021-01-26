@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def plota_corte(w):
+def plota_corte(w, i):
     beta = np.array([-w[0]/w[2], -w[1]/w[2]])
     x_reta = np.array([(1, 1), (1, 7)])
     ax.plot(x_reta[:, 1], np.dot(x_reta, beta), label=i)
@@ -135,7 +135,7 @@ for i in range(num_of_epochs+1):
 
     if i % 10 == 0:
         print(i, ' | ', custo)
-        plota_corte(w)
+        plota_corte(w, i)
     # calcula as distancias da atual regra de decisão (em função do w)
     distancias = Y * (np.dot(X, w)) - 1
     # if distance is more than 0, sample is not on the support vector -> Lagrange multiplier will be 0
