@@ -1,8 +1,13 @@
 # rodar pelo console interativo do Python (Alt+Shift+E)
 import numpy as np
+
 import matplotlib.pyplot as plt
+
 from sklearn.linear_model import LogisticRegression
 from sklearn import svm
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
+
 from funções.Gera_Base import gera_base
 
 # DELIMITA ESPAÇO A SER ESTUDADO
@@ -18,9 +23,9 @@ X = np.concatenate([x1.reshape(x1.size, 1), x2.reshape(x1.size, 1)], axis=1)
 beta = {'intercepto'  : '1',
                 'x1'  : '1',
                 'x2'  : '1',
-                'x1x2': '0',
-                'x1^2': '0',
-                'x2^2': '0'}
+                'x1x2': '1',
+                'x1^2': '1',
+                'x2^2': '1'}
 beta0 = float(beta['intercepto'])
 beta1 = float(beta['x1'])
 beta2 = float(beta['x2'])
@@ -33,13 +38,14 @@ logito = np.around(beta0 + beta1 * x1 + beta2 * x2 + beta12 * x1 * x2 + beta11 *
 print(logito.min(), logito.max()) #olhar os limites para colocar um "corte" que faça sentido
 
 # definir o hiperplano de corte a ser utilizado e a variação do ruído na geração da amostra
-corte = 50            # depois de olhar os limites da função, escolher um corte que faça um "desenho interessante"
-ruido = 10     # desvio padrão do ruído:para que as regressões não acertem 100%.Escolher valores adequados olhando os gráficos abaixo
+corte = 1700            # depois de olhar os limites da função, escolher um corte que faça um "desenho interessante"
+ruido = 200    # desvio padrão do ruído:para que as regressões não acertem 100%.Escolher valores adequados olhando os gráficos abaixo
 
 
 # ####################   GERA BASE, SUPERFICIE E HIPERPLANO    ####################################
 
 db = gera_base(x1, x2, logito, corte=corte, ruido=ruido)
+
 amostra = db.sample(1000)
 print('taxa vermelho:', round(db.target.mean()*100,1), '%')
 
@@ -53,8 +59,7 @@ ax_2D.scatter(round(intercecção['x1']), round(intercecção['x2']),
               c='black', marker='o', s=1)
 # ###############################    AJUSTA OS MODELOS   ######################################
 fig = plt.figure()
-
-# Logistico linear
+        # Logistico linear
 logist_linear = LogisticRegression(penalty='none')
 logist_linear.fit(X, db.target)
 db['prob_prev_log_linear'] = logist_linear.predict_proba(X)[:, 1]
@@ -63,8 +68,8 @@ prob_prev_log_lin_surf = np.array(db['prob_prev_log_linear']).reshape(x1_surf.sh
 ax1 = fig.add_subplot(221)
 ax1.title.set_text('LOGÍSTICA')
 ax1.contourf(x1_surf, x2_surf, prob_prev_log_lin_surf, cmap=plt.cm.coolwarm) # plota as probabilidade estimadas
-# ax1.scatter(amostra.x1, amostra.x2, c=amostra.cor, marker='o', alpha=0.9, s=2) #plota os pontos
-'''
+#ax1.scatter(amostra.x1, amostra.x2, c=amostra.cor, marker='o', alpha=0.9, s=2) #plota os pontos
+
         # Logistico Quadrático
 logist_quad = make_pipeline(PolynomialFeatures(2), LogisticRegression(penalty='none'))
 logist_quad.fit(X, db.target)
@@ -76,7 +81,7 @@ ax2 = fig.add_subplot(222)
 ax2.title.set_text('LOGÍSTICA QUADRÁTICA')
 ax2.contourf(x1_surf, x2_surf, prob_prev_log_quad_surf, cmap=plt.cm.coolwarm) # plota as probabilidade estimadas
 #ax2.scatter(amostra.x1, amostra.x2, c=amostra.cor, marker='o', alpha=0.9, s=2) #plota os pontos
-'''
+
         # SVM
 SVM = svm.SVC()
 sample = db.sample(10000)

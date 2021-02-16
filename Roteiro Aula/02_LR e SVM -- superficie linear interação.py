@@ -7,11 +7,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn import svm
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import roc_auc_score, roc_curve, classification_report,\
-                            accuracy_score, confusion_matrix, auc
 
-from funções.gera_normais_multivariadas import multivariate_gaussian
 from funções.Gera_Base import gera_base
 from funções.analise_inicial_superficie_gráfica import gera_graficos
 
@@ -53,8 +49,14 @@ db = gera_base(x1, x2, logito, corte=corte, ruido=ruido)
 amostra = db.sample(1000)
 print('taxa vermelho:', round(db.target.mean()*100,1), '%')
 
-gera_graficos(db, x1_surf, x2_surf, corte)  # olhar o gráfico e ajustar o corte e ruído, se necessário
-
+# gera_graficos(db, x1_surf, x2_surf, corte)  # olhar o gráfico e ajustar o corte e ruído, se necessário
+figura = plt.figure()
+ax_2D = figura.add_subplot(111)
+ax_2D.scatter(amostra['x1'], amostra['x2'],
+              c=amostra['cor'], marker=',', s=4, alpha=0.9)
+intercecção = db[round(db['logito_gabarito']) == corte]
+ax_2D.scatter(round(intercecção['x1']), round(intercecção['x2']),
+              c='black', marker='o', s=1)
 # ###############################    AJUSTA OS MODELOS   ######################################
 fig = plt.figure()
         # Logistico linear

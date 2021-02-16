@@ -47,7 +47,7 @@ Y = train_label[idx]
 
 # Ajuste do modelo
 classificador = svm.SVC(kernel='rbf')
-parametros = {'C': [0.1, 1, 10, 100, 1000], 'gamma': [1, 0.1, 0.01, 0.001, 0.0001]}
+parametros = {'C': [0.1, 1, 10, 100, 1000], 'gamma': [100, 10, 1, 0.1, 0.01]}
 grid = GridSearchCV(estimator=classificador, param_grid=parametros, cv=ps)
 modelo = grid.fit(X_total, Y_total)
 # modelo = classificador.fit(X, Y)
