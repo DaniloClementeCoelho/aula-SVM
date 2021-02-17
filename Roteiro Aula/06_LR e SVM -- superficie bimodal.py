@@ -7,9 +7,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn import svm
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import roc_auc_score, roc_curve, classification_report,\
-                            accuracy_score, confusion_matrix, auc
 
 from funções.gera_normais_multivariadas import multivariate_gaussian
 from funções.Gera_Base import gera_base
@@ -60,6 +57,7 @@ ax_2D.scatter(amostra['x1'], amostra['x2'],
 # intercecção = db[round(db['logito_gabarito']) == corte]
 # ax_2D.scatter(round(intercecção['x1']), round(intercecção['x2']), c='black', marker='o', s=1)
 plt.gca().set_aspect('equal')
+plt.show()
 # ###############################    AJUSTA OS MODELOS   ######################################
 fig = plt.figure()
         # Logistico linear

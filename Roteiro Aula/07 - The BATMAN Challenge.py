@@ -50,6 +50,7 @@ for j in range(len(Y)):
 meu_x1 = np.copy(Y)
 meu_x2 = np.zeros(len(Y))
 target = np.zeros(len(Y))
+cor = np.empty(len(Y), dtype=object)
 f_de_meux1 = np.zeros(3)
 i = 0
 
@@ -59,31 +60,41 @@ for k in Y:
     if len(f_de_meux1) == 1:
         if np.abs(meu_x2[i]) < np.abs(f_de_meux1[0]):
             target[i] = 1
+            cor[i] = 'red'
         else:
             target[i] = 0
+            cor[i] = 'blue'
     elif len(f_de_meux1) == 2:
          if meu_x2[i] < max(f_de_meux1[0], f_de_meux1[1]) and meu_x2[i] > min(f_de_meux1[0], f_de_meux1[1]):
             target[i] = 1
+            cor[i] = 'red'
          else:
             target[i] = 0
+            cor[i] = 'blue'
     elif len(f_de_meux1) == 3:
          if meu_x2[i] < max(f_de_meux1[0], f_de_meux1[1], f_de_meux1[2]) and meu_x2[i] > min(f_de_meux1[0], f_de_meux1[1], f_de_meux1[2]):
             target[i] = 1
+            cor[i] = 'red'
          else:
             target[i] = 0
+            cor[i] = 'blue'
     else:
         target[i] = 99
     i=i+1
 
 
-
+'''
 fig = plt.figure()
-ax1  = fig.add_subplot(211)
+ax1= fig.add_subplot(111)
 ax1.scatter(Y, X, c='black', s=2)
-ax2  = fig.add_subplot(212)
-ax2.scatter(meu_x1, meu_x2, c=target)
-
 plt.grid()
+'''
+
+fig2 = plt.figure()
+ax= fig2.add_subplot(111)
+ax.scatter(Y, X, c='black', s=2)
+ax.scatter(meu_x1, meu_x2, c=cor, marker=',', s=4, alpha=0.9)
+
 plt.show()
 
 '''

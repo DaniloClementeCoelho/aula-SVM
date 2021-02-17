@@ -51,6 +51,7 @@ ax_2D.scatter(amostra['x1'], amostra['x2'],
               c=amostra['cor'], marker=',', s=4, alpha=0.9)
 intercecção = db[round(db['logito_gabarito'], 2) == corte]
 ax_2D.scatter(round(intercecção['x1']), round(intercecção['x2']),c='black', marker='o', s=1)
+plt.show()
 # ###############################    AJUSTA OS MODELOS   ######################################
 fig = plt.figure()
 

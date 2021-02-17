@@ -57,6 +57,7 @@ ax_2D.scatter(amostra['x1'], amostra['x2'],
 intercecção = db[round(db['logito_gabarito']) == corte]
 ax_2D.scatter(round(intercecção['x1']), round(intercecção['x2']),
               c='black', marker='o', s=1)
+plt.show()
 # ###############################    AJUSTA OS MODELOS   ######################################
 fig = plt.figure()
         # Logistico linear
