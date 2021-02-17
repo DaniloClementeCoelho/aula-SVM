@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
 from sklearn import svm
 from funções.Gera_Base import gera_base
+from funções.analise_inicial_superficie_gráfica import gera_graficos
 
 # DELIMITA ESPAÇO A SER ESTUDADO
 limite_eixos = 50  # quanto maior, maior será o tamanho da amostra e processamento
