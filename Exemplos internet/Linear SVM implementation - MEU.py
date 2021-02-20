@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn import svm
+
 
 def plota_corte(w, i):
     beta = np.array([-w[0]/w[2], -w[1]/w[2]])
@@ -116,9 +118,10 @@ figura = plt.figure()
 ax = figura.add_subplot(111)
 ax.scatter(data[:, 1], data[:, 2], c=data[:, 0])
 
-# INICIALIZAR   ###########################################################
 Y = data[:, 0]
 X = data[:, 1:]
+
+# INICIALIZAR   ###########################################################
 num_of_epochs = 40 #10000
 lr = 1e-3
 C = 30
@@ -159,5 +162,28 @@ for i in range(num_of_epochs+1):
     w = w - lr * dw_medio
 
 print(w)
+
+modelo_temp = svm.SVC(kernel='linear').fit(data[:, 1:], data[:, 0])
+
+x1_surf = np.arange(1, 9, 0.1)
+x2_surf = -(modelo_temp.intercept_ + modelo_temp.coef_[:, 0]*x1_surf)/modelo_temp.coef_[:, 1]
+
+ax.plot(x1_surf, x2_surf, linewidth=5, linestyle='dashed', color='black', label='SVM')
+# ax.scatter(data[:, 1], data[:, 2], c=data[:, 0])
+
 plt.legend()
 plt.show()
+
+# #########################################################################
+'''
+modelo_temp = svm.SVC(kernel='linear').fit(X, Y)
+
+x1_surf = np.arange(0, 10, 0.1)
+x2_surf = -(modelo_temp.intercept_ + modelo_temp.coef_[:, 0]*x1_surf)/modelo_temp.coef_[:, 1]
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.plot(x1_surf, x2_surf)
+ax.scatter(data[:, 1], data[:, 2], c=data[:, 0])
+plt.show()
+'''

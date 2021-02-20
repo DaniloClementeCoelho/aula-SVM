@@ -72,7 +72,7 @@ figura = plt.figure()
 ax2 = figura.add_subplot(111)
 ax2.set_xlim(-7, 7)
 ax2.set_ylim(-3, 3)
-ax2.scatter(Y, X, c='black', s=1)
+# ax2.scatter(Y, X, c='black', s=1)
 ax2.contourf(x1_surf, x2_surf, prev_svm, cmap=plt.cm.coolwarm, alpha=0.5)
 # ax2.scatter(base['x1'], base['x2'], c=base['cor'], alpha=0.5, s=1)
 
