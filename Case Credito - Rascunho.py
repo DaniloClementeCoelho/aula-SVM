@@ -1,3 +1,5 @@
+# código pra aula se encontra no Jupyter
+
 import pandas as pd
 import numpy as np
 from sklearn import svm,

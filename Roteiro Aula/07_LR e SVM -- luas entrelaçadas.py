@@ -59,7 +59,7 @@ db['prob_prev_log_quad'] = logist_quad.predict_proba(X)[:, 1]
 prob_prev_log_quad_surf = np.array(db['prob_prev_log_quad']).reshape(x1_surf.shape)
 # Gráfico
 ax2 = fig.add_subplot(222)
-ax2.title.set_text('LOGÍSTICA ordem 4')
+ax2.title.set_text('LOGÍSTICA ordem 3')
 ax2.contourf(x1_surf, x2_surf, prob_prev_log_quad_surf, cmap=plt.cm.coolwarm) # plota as probabilidade estimadas
 ax2.scatter(amostra.x1, amostra.x2, c=amostra.cor, marker='o', alpha=0.9, s=2) #plota os pontos
 plt.gca().set_aspect('equal')
